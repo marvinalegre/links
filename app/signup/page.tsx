@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useActionState } from "react"
+import { useState, useActionState, useEffect } from "react"
 
 import { signup } from "@/app/actions/auth"
 import { Label } from "@/components/ui/label"
@@ -16,12 +16,21 @@ export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signup, initialState)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [showUsernameErr, setShowUsernameErr] = useState(true)
+  const [showPasswordErr, setShowPasswordErr] = useState(true)
+  const [showFormErr, setShowFormErr] = useState(true)
+
+  useEffect(() => {
+    setShowUsernameErr(true)
+    setShowPasswordErr(true)
+    setShowFormErr(true)
+  }, [state])
 
   return (
     <main className="mx-auto flex w-full max-w-xs flex-col gap-8 px-4 pt-16">
       <h1 className="text-2xl font-semibold tracking-tight">Sign up</h1>
 
-      {state.errors?.form && (
+      {state.errors?.form && showFormErr && (
         <small className="text-destructive">{state.errors.form}</small>
       )}
 
@@ -37,9 +46,19 @@ export default function SignupPage() {
             name="username"
             value={username}
             required
-            onChange={(e) => setUsername(e.target.value)}
+            aria-invalid={Boolean(state.errors?.username) && showUsernameErr}
+            onChange={(e) => {
+              setUsername(e.target.value)
+
+              if (state.errors?.username) {
+                setShowUsernameErr(false)
+              }
+              if (state.errors?.form) {
+                setShowFormErr(false)
+              }
+            }}
           />
-          {state.errors?.username && (
+          {state.errors?.username && showUsernameErr && (
             <small className="text-destructive">{state.errors.username}</small>
           )}
         </div>
@@ -52,9 +71,19 @@ export default function SignupPage() {
             type="password"
             value={password}
             required
-            onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={Boolean(state.errors?.password) && showPasswordErr}
+            onChange={(e) => {
+              setPassword(e.target.value)
+
+              if (state.errors?.password) {
+                setShowPasswordErr(false)
+              }
+              if (state.errors?.form) {
+                setShowFormErr(false)
+              }
+            }}
           />
-          {state.errors?.password && (
+          {state.errors?.password && showPasswordErr && (
             <small className="text-destructive">{state.errors.password}</small>
           )}
         </div>
