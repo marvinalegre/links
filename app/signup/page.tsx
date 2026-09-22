@@ -4,6 +4,9 @@ import Link from "next/link"
 import { useState, useActionState } from "react"
 
 import { signup } from "@/app/actions/auth"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 const initialState = {
   errors: {},
@@ -15,45 +18,60 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
 
   return (
-    <main>
-      <h1>Sign up</h1>
+    <main className="mx-auto flex w-full max-w-xs flex-col gap-8 px-4 pt-16">
+      <h1 className="text-2xl font-semibold tracking-tight">Sign up</h1>
 
-      {state.errors?.form && <small>{state.errors.form}</small>}
+      {state.errors?.form && (
+        <small className="text-destructive">{state.errors.form}</small>
+      )}
 
       <form
         action={formAction}
+        className="flex flex-col gap-4"
         onSubmit={() => (document.activeElement as HTMLElement)?.blur()}
       >
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          name="username"
-          value={username}
-          required
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            name="username"
+            value={username}
+            required
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          {state.errors?.username && (
+            <small className="text-destructive">{state.errors.username}</small>
+          )}
+        </div>
 
-        {state.errors?.username && <small>{state.errors.username}</small>}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {state.errors?.password && (
+            <small className="text-destructive">{state.errors.password}</small>
+          )}
+        </div>
 
-        <label htmlFor="password">Password</label>
-
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {state.errors?.password && <small>{state.errors.password}</small>}
-
-        <button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending}>
           {pending ? "Creating account..." : "Create account"}
-        </button>
+        </Button>
       </form>
 
-      <p>
-        Already have an account? <Link href="/login">Log in</Link>
+      <p className="text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          Log in
+        </Link>
       </p>
     </main>
   )
