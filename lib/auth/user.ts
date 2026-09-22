@@ -1,4 +1,3 @@
-import { cookies } from "next/headers"
 import { db } from "@/lib/db"
 
 export type User = {
@@ -8,7 +7,7 @@ export type User = {
   created_at: string
 }
 
-export async function createUser(username: string, passwordHash: string) {
+export function createUser(username: string, passwordHash: string) {
   const result = db
     .prepare(
       `
