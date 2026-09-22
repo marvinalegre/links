@@ -17,7 +17,7 @@ export function createUser(username: string, passwordHash: string) {
     )
     .run(username, passwordHash)
 
-  return getUserById(Number(result.lastInsertRowid))
+  return Number(result.lastInsertRowid)
 }
 
 export function getUserById(id: number) {

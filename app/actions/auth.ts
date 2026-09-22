@@ -5,6 +5,7 @@ import { z } from "zod"
 import { hashPassword } from "@/lib/auth/password"
 import { createSession } from "@/lib/auth/session"
 import { createUser, getUserByUsername } from "@/lib/auth/user"
+import { redirect } from "next/navigation"
 
 const signupSchema = z.object({
   username: z
@@ -23,7 +24,18 @@ const signupSchema = z.object({
     .max(128, "Password must be at most 128 characters"),
 })
 
-export async function signup(formData: FormData) {
+type SignupState = {
+  errors?: {
+    username?: string
+    password?: string
+    form?: string
+  }
+}
+
+export async function signup(
+  _prevState: SignupState,
+  formData: FormData
+): Promise<SignupState> {
   const username = formData.get("username")
   const password = formData.get("password")
 
@@ -33,32 +45,42 @@ export async function signup(formData: FormData) {
   })
 
   if (!result.success) {
-    return {
-      error: result.error.issues[0].message,
+    const errors: SignupState["errors"] = {}
+
+    for (const issue of result.error.issues) {
+      const field = issue.path[0]
+
+      if (field === "username" || field === "password") {
+        errors[field] ??= issue.message
+      }
     }
+
+    return { errors }
   }
 
   const existingUser = getUserByUsername(result.data.username)
 
   if (existingUser) {
     return {
-      error: "Username already exists",
+      errors: {
+        username: "Username already exists",
+      },
     }
   }
 
   const passwordHash = await hashPassword(result.data.password)
 
-  const user = createUser(result.data.username, passwordHash)
+  try {
+    const userId = createUser(result.data.username, passwordHash)
 
-  if (!user) {
+    await createSession(userId)
+  } catch {
     return {
-      error: "Failed to create account",
+      errors: {
+        form: "Something went wrong. Please try again.",
+      },
     }
   }
 
-  await createSession(user.id)
-
-  return {
-    success: true,
-  }
+  redirect("/")
 }
