@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState, useActionState, useEffect } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import { signup } from "@/app/actions/auth"
+import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -47,7 +48,11 @@ export default function SignupPage() {
             name="username"
             value={username}
             required
-            aria-invalid={Boolean(state.errors?.username) && showUsernameErr}
+            aria-invalid={
+              Boolean(state.errors?.username) &&
+              showUsernameErr &&
+              state.errors?.username !== "Username already exists"
+            }
             onChange={(e) => {
               setUsername(e.target.value)
 
@@ -60,7 +65,15 @@ export default function SignupPage() {
             }}
           />
           {state.errors?.username && showUsernameErr && (
-            <small className="text-destructive">{state.errors.username}</small>
+            <small
+              className={cn(
+                state.errors?.username !== "Username already exists"
+                  ? "text-destructive"
+                  : "text-amber-600"
+              )}
+            >
+              {state.errors.username}
+            </small>
           )}
         </div>
 
