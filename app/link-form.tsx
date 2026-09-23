@@ -12,24 +12,28 @@ export default function LinkForm() {
   const [state, formAction, pending] = useActionState(addLink, initialState)
 
   return (
-    <form action={formAction}>
-      <label>
-        URL
+    <form action={formAction} className="flex gap-2">
+      <div className="flex-1">
         <input
           type="url"
           name="url"
-          placeholder="https://example.com"
+          placeholder="Paste a URL..."
           required
           aria-invalid={!!state.errors?.url}
+          className="w-full"
         />
-      </label>
 
-      {state.errors?.url && <small>{state.errors.url}</small>}
+        {state.errors?.url && (
+          <small className="text-destructive">{state.errors.url}</small>
+        )}
 
-      {state.errors?.form && <small>{state.errors.form}</small>}
+        {state.errors?.form && (
+          <small className="text-destructive">{state.errors.form}</small>
+        )}
+      </div>
 
       <button type="submit" disabled={pending}>
-        {pending ? "Adding..." : "Add link"}
+        {pending ? "Adding..." : "Add"}
       </button>
     </form>
   )

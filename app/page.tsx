@@ -1,30 +1,49 @@
 import { requireAuth } from "@/lib/auth/redirect"
 import { logout } from "@/app/actions/auth"
-import LinkForm from "./link-form"
-import { Button } from "@/components/ui/button"
 import { getLinks } from "@/lib/links/link"
+
+import LinkForm from "./link-form"
 
 export default async function HomePage() {
   const session = await requireAuth()
   const links = getLinks(session.user_id)
 
   return (
-    <main>
-      <h1>Links</h1>
+    <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-8 px-4 py-10">
+      <header className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold tracking-tight">Links</h1>
+
+        <form action={logout}>
+          <button
+            type="submit"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Log out
+          </button>
+        </form>
+      </header>
 
       <LinkForm />
 
-      <ul>
+      <section className="space-y-3">
         {links.map((link) => (
-          <li key={link.id}>
-            <a href={link.url}>{link.title || link.url}</a>
-          </li>
-        ))}
-      </ul>
+          <a
+            key={link.id}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-lg border bg-muted/40 p-4 transition-colors hover:bg-muted/40"
+          >
+            <div className="font-medium">{link.title || link.url}</div>
 
-      <form action={logout}>
-        <Button type="submit">Log out</Button>
-      </form>
+            {link.title && (
+              <div className="mt-1 truncate text-sm text-muted-foreground">
+                {link.url}
+              </div>
+            )}
+          </a>
+        ))}
+      </section>
     </main>
   )
 }
