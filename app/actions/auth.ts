@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 
-import { hashPassword } from "@/lib/auth/password"
+import { hashPassword, verifyPassword } from "@/lib/auth/password"
 import { createSession, deleteSession } from "@/lib/auth/session"
 import { createUser, getUserByUsername } from "@/lib/auth/user"
 import { redirect } from "next/navigation"
@@ -88,4 +88,69 @@ export async function signup(
 export async function logout() {
   await deleteSession()
   redirect("/login")
+}
+
+const loginSchema = z.object({
+  username: z.string().trim().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+})
+
+type LoginState = {
+  errors?: {
+    username?: string
+    password?: string
+    form?: string
+  }
+}
+
+export async function login(
+  _prevState: LoginState,
+  formData: FormData
+): Promise<LoginState> {
+  const username = formData.get("username")
+  const password = formData.get("password")
+
+  const result = loginSchema.safeParse({
+    username,
+    password,
+  })
+
+  if (!result.success) {
+    const errors: LoginState["errors"] = {}
+
+    for (const issue of result.error.issues) {
+      const field = issue.path[0]
+
+      if (field === "username" || field === "password") {
+        errors[field] ??= issue.message
+      }
+    }
+
+    return { errors }
+  }
+
+  const user = getUserByUsername(result.data.username)
+
+  if (
+    !user ||
+    !(await verifyPassword(result.data.password, user.password_hash))
+  ) {
+    return {
+      errors: {
+        form: "Invalid username or password",
+      },
+    }
+  }
+
+  try {
+    await createSession(user.id)
+  } catch {
+    return {
+      errors: {
+        form: "Something went wrong. Please try again.",
+      },
+    }
+  }
+
+  redirect("/")
 }
