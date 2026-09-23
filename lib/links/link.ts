@@ -33,3 +33,23 @@ export function getLinks(userId: number) {
     url: string
   }[]
 }
+
+export type Link = {
+  id: number
+  title: string
+  url: string
+}
+
+export function getLinksByUsername(username: string): Link[] {
+  return db
+    .prepare(
+      `
+      SELECT links.id, links.title, links.url
+      FROM links
+      JOIN users ON users.id = links.user_id
+      WHERE users.username = ?
+      ORDER BY links.id DESC
+    `
+    )
+    .all(username) as Link[]
+}
