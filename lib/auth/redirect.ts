@@ -9,3 +9,13 @@ export async function redirectIfAuthenticated() {
     redirect("/")
   }
 }
+
+export async function requireAuth() {
+  const session = await getSession()
+
+  if (!session) {
+    redirect("/login")
+  }
+
+  return session
+}
