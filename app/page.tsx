@@ -1,11 +1,16 @@
-import { requireAuth } from "@/lib/auth/redirect"
 import { logout } from "@/app/actions/auth"
 import { getLinks } from "@/lib/links/link"
-
+import Landing from "@/app/components/Landing"
+import { getSession } from "@/lib/auth/session"
 import LinkForm from "./link-form"
 
 export default async function HomePage() {
-  const session = await requireAuth()
+  const session = await getSession()
+
+  if (!session) {
+    return <Landing />
+  }
+
   const links = getLinks(session.user_id)
 
   return (
