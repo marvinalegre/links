@@ -3,7 +3,7 @@
 import { z } from "zod"
 
 import { hashPassword } from "@/lib/auth/password"
-import { createSession } from "@/lib/auth/session"
+import { createSession, deleteSession } from "@/lib/auth/session"
 import { createUser, getUserByUsername } from "@/lib/auth/user"
 import { redirect } from "next/navigation"
 
@@ -83,4 +83,9 @@ export async function signup(
   }
 
   redirect("/")
+}
+
+export async function logout() {
+  await deleteSession()
+  redirect("/login")
 }
