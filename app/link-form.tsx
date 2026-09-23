@@ -3,6 +3,8 @@
 import { useActionState } from "react"
 
 import { addLink } from "./actions/links"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 const initialState = {
   errors: {},
@@ -14,7 +16,7 @@ export default function LinkForm() {
   return (
     <form action={formAction} className="flex gap-2">
       <div className="flex-1">
-        <input
+        <Input
           type="url"
           name="url"
           placeholder="Paste a URL..."
@@ -32,9 +34,9 @@ export default function LinkForm() {
         )}
       </div>
 
-      <button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending}>
         {pending ? "Adding..." : "Add"}
-      </button>
+      </Button>
     </form>
   )
 }

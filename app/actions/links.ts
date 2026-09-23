@@ -2,10 +2,12 @@
 
 import { redirect } from "next/navigation"
 import { z } from "zod"
-
+import { db } from "@/lib/db"
+import { getSession } from "@/lib/auth/session"
 import { requireAuth } from "@/lib/auth/redirect"
 import { fetchTitle } from "@/lib/links/fetch-title"
 import { createLink } from "@/lib/links/link"
+import { revalidatePath } from "next/cache"
 
 const linkSchema = z.object({
   url: z.url("Invalid URL"),
@@ -53,4 +55,21 @@ export async function addLink(
   }
 
   redirect("/")
+}
+
+export async function deleteLink(formData: FormData) {
+  const session = await getSession()
+
+  if (!session) {
+    redirect("/login")
+  }
+
+  const id = Number(formData.get("id"))
+
+  db.prepare("DELETE FROM links WHERE id = ? AND user_id = ?").run(
+    id,
+    session.user_id
+  )
+
+  revalidatePath("/")
 }

@@ -1,8 +1,10 @@
 import { logout } from "@/app/actions/auth"
+import { deleteLink } from "./actions/links"
 import { getLinks } from "@/lib/links/link"
 import Landing from "@/app/components/Landing"
 import { getSession } from "@/lib/auth/session"
 import LinkForm from "./link-form"
+import { DeleteButton } from "./components/DeleteButton"
 
 export default async function HomePage() {
   const session = await getSession()
@@ -46,6 +48,13 @@ export default async function HomePage() {
                 {link.url}
               </div>
             )}
+
+            <div className="flex">
+              <form action={deleteLink} className="ml-auto">
+                <input type="hidden" name="id" value={link.id} />
+                <DeleteButton />
+              </form>
+            </div>
           </a>
         ))}
       </section>
