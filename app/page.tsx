@@ -5,6 +5,8 @@ import Landing from "@/app/components/Landing"
 import { getSession } from "@/lib/auth/session"
 import LinkForm from "./link-form"
 import { DeleteButton } from "./components/DeleteButton"
+import { getUserById } from "@/lib/auth/user"
+import Link from "next/link"
 
 export default async function HomePage() {
   const session = await getSession()
@@ -14,11 +16,14 @@ export default async function HomePage() {
   }
 
   const links = getLinks(session.user_id)
+  const user = getUserById(session.user_id)
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-8 px-4 py-10">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Links</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          <Link href={`/${user?.username}`}>Links</Link>
+        </h1>
 
         <form action={logout}>
           <button
