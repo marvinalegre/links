@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import Fuse from "fuse.js"
 
 type Link = {
   id: number
@@ -11,16 +12,18 @@ type Link = {
 export default function LinkSearch({ links }: { links: Link[] }) {
   const [query, setQuery] = useState("")
 
-  const results = links.filter((link) => {
-    const q = query.toLowerCase().trim()
+  const fuse = useMemo(
+    () =>
+      new Fuse(links, {
+        keys: ["title", "url"],
+        threshold: 0.5,
+      }),
+    [links]
+  )
 
-    if (!q) return true
-
-    return (
-      (link.title ?? "").toLowerCase().includes(q) ||
-      link.url.toLowerCase().includes(q)
-    )
-  })
+  const results = query.trim()
+    ? fuse.search(query).map((result) => result.item)
+    : links
 
   return (
     <div className="space-y-4">
