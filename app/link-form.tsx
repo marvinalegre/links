@@ -1,9 +1,8 @@
 "use client"
 
 import { useActionState } from "react"
-
+import { Loader2 } from "lucide-react"
 import { addLink } from "./actions/links"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 const initialState = {
@@ -16,14 +15,22 @@ export default function LinkForm() {
   return (
     <form action={formAction} className="flex gap-2">
       <div className="flex-1">
-        <Input
-          type="url"
-          name="url"
-          placeholder="Paste a URL..."
-          required
-          aria-invalid={!!state.errors?.url}
-          className="w-full"
-        />
+        <div className="relative">
+          <Input
+            autoFocus
+            type="url"
+            name="url"
+            placeholder="Paste a URL..."
+            disabled={pending}
+            required
+            aria-invalid={!!state.errors?.url}
+            className="w-full p-5"
+          />
+
+          {pending && (
+            <Loader2 className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+          )}
+        </div>
 
         {state.errors?.url && (
           <small className="text-destructive">{state.errors.url}</small>
@@ -33,10 +40,6 @@ export default function LinkForm() {
           <small className="text-destructive">{state.errors.form}</small>
         )}
       </div>
-
-      <Button type="submit" disabled={pending}>
-        {pending ? "Adding..." : "Add"}
-      </Button>
     </form>
   )
 }

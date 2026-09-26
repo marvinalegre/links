@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Fuse from "fuse.js"
+import { Input } from "@/components/ui/input"
 
 type Link = {
   id: number
@@ -27,12 +28,13 @@ export default function LinkSearch({ links }: { links: Link[] }) {
 
   return (
     <div className="space-y-4">
-      <input
+      <Input
+        autoFocus
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search links..."
-        className="w-full rounded-lg border bg-background px-4 py-3 outline-none focus:ring-2"
+        className="w-full p-5"
       />
 
       <div className="space-y-2">
