@@ -903,7 +903,7 @@
           const today = localDateKey(now);
           const lastExport = await getMeta("lastExportDate");
           if (now.getHours() >= EXPORT_HOUR && lastExport !== today) {
-            downloadJSON(links, `export-${today}.json`);
+            downloadJSON(links, `links-${today}.json`);
             await setMeta("lastExportDate", today);
           }
         } finally {
