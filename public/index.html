@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Links</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --text: #1d232b;
+        --muted: #6b7280;
+        --border: #e3e6eb;
+        --accent: #3b6cf6;
+        --accent-text: #ffffff;
+        --tag-bg: #eef2ff;
+        --tag-text: #3b4cca;
+        --danger: #d9434b;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0f1216;
+          --surface: #171b21;
+          --text: #e6e9ef;
+          --muted: #9aa3b2;
+          --border: #272d36;
+          --accent: #5b84ff;
+          --accent-text: #ffffff;
+          --tag-bg: #1f2a4d;
+          --tag-text: #a9b8ff;
+          --danger: #ff6b72;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0f1216;
+        --surface: #171b21;
+        --text: #e6e9ef;
+        --muted: #9aa3b2;
+        --border: #272d36;
+        --accent: #5b84ff;
+        --accent-text: #ffffff;
+        --tag-bg: #1f2a4d;
+        --tag-text: #a9b8ff;
+        --danger: #ff6b72;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45;
+        padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+          env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 1.4rem;
+        margin: 0;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        font: inherit;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        padding: 7px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--muted);
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-text);
+      }
+      button.danger {
+        color: var(--danger);
+      }
+      button.small {
+        padding: 4px 8px;
+        font-size: 0.85rem;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      form.link-form {
+        display: grid;
+        gap: 10px;
+      }
+      form.link-form .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 600px) {
+        form.link-form .row {
+          grid-template-columns: 1fr;
+        }
+      }
+      label {
+        font-size: 0.85rem;
+        color: var(--muted);
+        display: grid;
+        gap: 4px;
+      }
+      input,
+      textarea {
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 10px;
+        width: 100%;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+      .form-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .error {
+        color: var(--danger);
+        font-size: 0.85rem;
+        min-height: 1em;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .toolbar input[type="search"] {
+        flex: 1 1 220px;
+      }
+      .count {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .tags-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.85rem;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .chip.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-text);
+      }
+
+      .links {
+        display: grid;
+        gap: 10px;
+      }
+      .link-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: grid;
+        gap: 6px;
+      }
+      .link-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .link-title {
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+        word-break: break-word;
+      }
+      .link-title:hover {
+        text-decoration: underline;
+      }
+      .link-url {
+        font-size: 0.85rem;
+        color: var(--muted);
+        word-break: break-all;
+      }
+      .link-note {
+        font-size: 0.9rem;
+        color: var(--text);
+        opacity: 0.85;
+        white-space: pre-wrap;
+      }
+      .link-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+      .tag {
+        background: var(--tag-bg);
+        color: var(--tag-text);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        border: none;
+      }
+      .card-actions {
+        position: relative;
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .menu-btn {
+        font-size: 1.1rem;
+        line-height: 1;
+        padding: 2px 8px;
+      }
+      .menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 4px;
+        z-index: 5;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        display: grid;
+        min-width: 120px;
+        padding: 4px;
+      }
+      .menu button {
+        border: none;
+        text-align: left;
+        border-radius: 6px;
+      }
+      .menu.hidden {
+        display: none !important;
+      }
+      .empty {
+        text-align: center;
+        color: var(--muted);
+        padding: 40px 16px;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal {
+        width: 100%;
+        max-width: 520px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Links</h1>
+        <div class="actions">
+          <button id="btn-import">Import</button>
+          <button id="btn-export">Export</button>
+          <button id="btn-new" class="primary">+ Add link</button>
+          <input
+            type="file"
+            id="file-import"
+            accept="application/json"
+            class="hidden"
+          />
+        </div>
+      </header>
+
+      <div class="modal-backdrop" id="form-panel">
+        <div
+          class="panel modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="form-title"
+          style="margin: 0; max-height: 90vh; overflow: auto"
+        >
+          <h2 id="form-title" style="margin: 0 0 12px; font-size: 1.15rem">
+            Add link
+          </h2>
+          <form class="link-form" id="link-form" autocomplete="off">
+            <div class="row">
+              <label
+                >Title (optional)
+                <input
+                  type="text"
+                  id="f-title"
+                  placeholder="e.g. MDN Web Docs"
+                />
+              </label>
+              <label
+                >URL
+                <input
+                  type="url"
+                  id="f-url"
+                  placeholder="https://example.com"
+                  required
+                />
+              </label>
+            </div>
+            <label
+              >Tags (comma separated)
+              <input
+                type="text"
+                id="f-tags"
+                placeholder="reading, dev, design"
+              />
+            </label>
+            <label
+              >Notes
+              <textarea
+                id="f-notes"
+                placeholder="Why you saved it..."
+              ></textarea>
+            </label>
+            <div class="error" id="f-error"></div>
+            <div class="form-buttons">
+              <button type="button" id="f-cancel">Cancel</button>
+              <button type="submit" class="primary" id="f-save">
+                Save link
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-backdrop" id="confirm-panel">
+        <div
+          class="panel modal"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirm-title"
+          style="margin: 0"
+        >
+          <h2 id="confirm-title" style="margin: 0 0 8px; font-size: 1.15rem">
+            Delete link?
+          </h2>
+          <p
+            id="confirm-text"
+            style="margin: 0 0 16px; color: var(--muted)"
+          ></p>
+          <div class="form-buttons">
+            <button type="button" id="confirm-cancel">Cancel</button>
+            <button
+              type="button"
+              class="danger"
+              id="confirm-ok"
+              style="border-color: var(--danger)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input
+          type="search"
+          id="search"
+          placeholder="Search title, URL, notes, or tags..."
+          autocomplete="off"
+          autofocus
+        />
+        <span class="count" id="count"></span>
+      </div>
+
+      <div class="tags-filter" id="tag-filters"></div>
+
+      <div class="links" id="links"></div>
+    </div>
+
+    <script>
+      let links = [];
+      let activeTag = null;
+      let editingId = null;
+
+      const $ = (id) => document.getElementById(id);
+      const uid = () =>
+        Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+      function parseTags(str) {
+        return [
+          ...new Set(
+            str
+              .split(",")
+              .map((t) => t.trim().toLowerCase())
+              .filter(Boolean),
+          ),
+        ];
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+
+      function safeHref(url) {
+        try {
+          const u = new URL(url);
+          return u.protocol === "http:" || u.protocol === "https:"
+            ? u.href
+            : "#";
+        } catch {
+          return "#";
+        }
+      }
+
+      function allTags() {
+        const set = new Set();
+        links.forEach((l) => l.tags.forEach((t) => set.add(t)));
+        return [...set].sort();
+      }
+
+      function editDistance(a, b) {
+        const m = a.length,
+          n = b.length;
+        let prev = Array.from({ length: n + 1 }, (_, j) => j);
+        for (let i = 1; i <= m; i++) {
+          const cur = [i];
+          for (let j = 1; j <= n; j++) {
+            cur[j] = Math.min(
+              prev[j] + 1,
+              cur[j - 1] + 1,
+              prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+            );
+          }
+          prev = cur;
+        }
+        return prev[n];
+      }
+
+      // Short terms must match exactly; longer terms may have 1-2 typos.
+      // Partial words also match (e.g. "wikip" finds "wikipedia").
+      function fuzzyMatch(term, word) {
+        const allowed = term.length <= 3 ? 0 : term.length <= 6 ? 1 : 2;
+        if (editDistance(term, word) <= allowed) return true;
+        if (word.length > term.length) {
+          return editDistance(term, word.slice(0, term.length)) <= allowed;
+        }
+        return false;
+      }
+
+      function filteredLinks() {
+        const q = $("search").value.trim().toLowerCase();
+        return links
+          .filter((l) => !activeTag || l.tags.includes(activeTag))
+          .filter((l) => {
+            if (!q) return true;
+            const text = [l.title, l.url, l.notes, l.tags.join(" ")]
+              .join(" ")
+              .toLowerCase();
+            const words = text.split(/[^a-z0-9]+/).filter(Boolean);
+            return q
+              .split(/\s+/)
+              .filter(Boolean)
+              .every(
+                (term) =>
+                  text.includes(term) || words.some((w) => fuzzyMatch(term, w)),
+              );
+          })
+          .sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      function render() {
+        saveLinks();
+        const tags = allTags();
+        if (activeTag && !tags.includes(activeTag)) activeTag = null;
+
+        $("tag-filters").innerHTML = tags.length
+          ? tags
+              .map(
+                (t) =>
+                  `<button class="chip ${t === activeTag ? "active" : ""}" data-tag="${escapeHtml(t)}">#${escapeHtml(t)}</button>`,
+              )
+              .join("")
+          : "";
+
+        const list = filteredLinks();
+        $("count").textContent =
+          `${list.length} of ${links.length} link${links.length === 1 ? "" : "s"}`;
+
+        if (!links.length) {
+          $("links").innerHTML =
+            `<div class="empty">No links yet. Click <strong>+ Add link</strong> to save your first one.</div>`;
+          return;
+        }
+        if (!list.length) {
+          $("links").innerHTML =
+            `<div class="empty">No links match your search or filter.</div>`;
+          return;
+        }
+
+        $("links").innerHTML = list
+          .map(
+            (l) => `
+      <div class="link-card">
+        <div class="link-top">
+          <div style="min-width:0">
+            <a class="link-title" href="${escapeHtml(safeHref(l.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.title || l.url)}</a>
+            ${l.title ? `<div class="link-url">${escapeHtml(l.url)}</div>` : ""}
+          </div>
+          <div class="card-actions">
+            <button class="small menu-btn" data-menu="${l.id}" aria-label="Options" aria-haspopup="true">⋯</button>
+            <div class="menu hidden" data-menu-panel="${l.id}">
+              <button class="small" data-edit="${l.id}">Edit</button>
+              <button class="small danger" data-delete="${l.id}">Delete</button>
+            </div>
+          </div>
+        </div>
+        ${l.notes ? `<div class="link-note">${escapeHtml(l.notes)}</div>` : ""}
+        ${l.tags.length ? `<div class="link-meta">${l.tags.map((t) => `<button class="tag" data-tag="${escapeHtml(t)}">#${escapeHtml(t)}</button>`).join("")}</div>` : ""}
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function openForm(link = null) {
+        editingId = link ? link.id : null;
+        $("f-title").value = link ? link.title : "";
+        $("f-url").value = link ? link.url : "";
+        $("f-tags").value = link ? link.tags.join(", ") : "";
+        $("f-notes").value = link ? link.notes : "";
+        $("f-error").textContent = "";
+        $("form-title").textContent = link ? "Edit link" : "Add link";
+        $("form-panel").classList.add("open");
+        $("f-title").focus();
+      }
+
+      function closeForm() {
+        editingId = null;
+        $("form-panel").classList.remove("open");
+        $("link-form").reset();
+      }
+
+      const TITLE_SERVICE = "/title";
+      async function fetchTitle(url) {
+        try {
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 4000);
+          const res = await fetch(
+            `${TITLE_SERVICE}?url=${encodeURIComponent(url)}`,
+            { signal: ctrl.signal },
+          );
+          clearTimeout(timer);
+          if (!res.ok) return "";
+          const data = await res.json();
+          return (data.title || "").trim();
+        } catch (err) {
+          console.warn("Title lookup failed:", err);
+          return "";
+        }
+      }
+
+      $("link-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = $("f-title").value.trim();
+        let url = $("f-url").value.trim();
+        if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+        try {
+          new URL(url);
+        } catch {
+          $("f-error").textContent = "Please enter a valid URL.";
+          return;
+        }
+        const finalTitle = title || (await fetchTitle(url));
+        const data = {
+          title: finalTitle,
+          url,
+          tags: parseTags($("f-tags").value),
+          notes: $("f-notes").value.trim(),
+        };
+        if (editingId) {
+          const existing = links.find((l) => l.id === editingId);
+          if (existing) Object.assign(existing, data);
+        } else {
+          links.push({ id: uid(), createdAt: Date.now(), ...data });
+        }
+        closeForm();
+        render();
+      });
+
+      $("f-cancel").addEventListener("click", closeForm);
+      $("form-panel").addEventListener("click", (e) => {
+        if (e.target.id === "form-panel") closeForm();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && $("form-panel").classList.contains("open"))
+          closeForm();
+      });
+      $("btn-new").addEventListener("click", () => openForm());
+      $("search").addEventListener("input", render);
+
+      $("links").addEventListener("click", (e) => {
+        const menuBtn = e.target.closest("[data-menu]");
+        if (menuBtn) {
+          const panel = document.querySelector(
+            `[data-menu-panel="${menuBtn.dataset.menu}"]`,
+          );
+          const wasOpen = !panel.classList.contains("hidden");
+          closeMenus();
+          if (!wasOpen) panel.classList.remove("hidden");
+          return;
+        }
+        closeMenus();
+        const edit = e.target.closest("[data-edit]");
+        const del = e.target.closest("[data-delete]");
+        const tag = e.target.closest("[data-tag]");
+        if (edit) {
+          openForm(links.find((l) => l.id === edit.dataset.edit));
+        } else if (del) {
+          const l = links.find((x) => x.id === del.dataset.delete);
+          if (l) openConfirm(l);
+        } else if (tag) {
+          activeTag = activeTag === tag.dataset.tag ? null : tag.dataset.tag;
+          render();
+        }
+      });
+
+      function closeMenus() {
+        document
+          .querySelectorAll("[data-menu-panel]")
+          .forEach((p) => p.classList.add("hidden"));
+      }
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".card-actions")) closeMenus();
+      });
+
+      let pendingDeleteId = null;
+      function openConfirm(link) {
+        pendingDeleteId = link.id;
+        $("confirm-text").textContent =
+          `"${link.title || link.url}" will be removed. This can't be undone.`;
+        $("confirm-panel").classList.add("open");
+        $("confirm-cancel").focus();
+      }
+      function closeConfirm() {
+        pendingDeleteId = null;
+        $("confirm-panel").classList.remove("open");
+      }
+      $("confirm-cancel").addEventListener("click", closeConfirm);
+      $("confirm-ok").addEventListener("click", () => {
+        if (pendingDeleteId) {
+          links = links.filter((x) => x.id !== pendingDeleteId);
+          if (editingId === pendingDeleteId) closeForm();
+          closeConfirm();
+          render();
+        }
+      });
+      $("confirm-panel").addEventListener("click", (e) => {
+        if (e.target.id === "confirm-panel") closeConfirm();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && $("confirm-panel").classList.contains("open"))
+          closeConfirm();
+      });
+
+      $("tag-filters").addEventListener("click", (e) => {
+        const chip = e.target.closest("[data-tag]");
+        if (!chip) return;
+        activeTag = activeTag === chip.dataset.tag ? null : chip.dataset.tag;
+        render();
+      });
+
+      $("btn-export").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(links, null, 2)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "links.json";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      });
+
+      $("btn-import").addEventListener("click", () => $("file-import").click());
+      $("file-import").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const data = JSON.parse(await file.text());
+          if (!Array.isArray(data))
+            throw new Error("Expected an array of links.");
+          const cleaned = data
+            .filter((l) => l && typeof l.url === "string")
+            .map((l) => ({
+              id: l.id || uid(),
+              title: String(l.title || ""),
+              url: String(l.url),
+              tags: Array.isArray(l.tags)
+                ? l.tags.map((t) => String(t).toLowerCase())
+                : [],
+              notes: String(l.notes || ""),
+              createdAt: Number(l.createdAt) || Date.now(),
+            }));
+          links = [...links, ...cleaned];
+          render();
+        } catch (err) {
+          alert("Import failed: " + err.message);
+        }
+        e.target.value = "";
+      });
+
+      const DB_NAME = "linksdb";
+      const STORE = "links";
+      let dbPromise = null;
+      let loaded = false;
+
+      function openDB() {
+        if (!dbPromise) {
+          dbPromise = new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, 2);
+            req.onupgradeneeded = () => {
+              const db = req.result;
+              if (!db.objectStoreNames.contains(STORE))
+                db.createObjectStore(STORE, { keyPath: "id" });
+              if (!db.objectStoreNames.contains("meta"))
+                db.createObjectStore("meta");
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          });
+        }
+        return dbPromise;
+      }
+
+      async function loadLinks() {
+        try {
+          const db = await openDB();
+          return await new Promise((resolve, reject) => {
+            const req = db
+              .transaction(STORE, "readonly")
+              .objectStore(STORE)
+              .getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => reject(req.error);
+          });
+        } catch (err) {
+          console.error("Could not load links:", err);
+          return null;
+        }
+      }
+
+      async function saveLinks() {
+        if (!loaded) return;
+        try {
+          const db = await openDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE, "readwrite");
+            const store = tx.objectStore(STORE);
+            store.clear();
+            links.forEach((l) => store.put(l));
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (err) {
+          console.error("Could not save links:", err);
+        }
+      }
+
+      const EXPORT_HOUR = 20; // 8pm local time
+      let exporting = false;
+
+      function localDateKey(d = new Date()) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+      }
+
+      async function getMeta(key) {
+        try {
+          const db = await openDB();
+          return await new Promise((resolve, reject) => {
+            const req = db
+              .transaction("meta", "readonly")
+              .objectStore("meta")
+              .get(key);
+            req.onsuccess = () => resolve(req.result ?? null);
+            req.onerror = () => reject(req.error);
+          });
+        } catch (err) {
+          console.error("Could not read meta:", err);
+          return null;
+        }
+      }
+
+      async function setMeta(key, value) {
+        try {
+          const db = await openDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction("meta", "readwrite");
+            tx.objectStore("meta").put(value, key);
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (err) {
+          console.error("Could not write meta:", err);
+        }
+      }
+
+      function downloadJSON(data, filename) {
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      async function maybeExport() {
+        if (!loaded || exporting) return;
+        exporting = true;
+        try {
+          const now = new Date();
+          const today = localDateKey(now);
+          const lastExport = await getMeta("lastExportDate");
+          if (now.getHours() >= EXPORT_HOUR && lastExport !== today) {
+            downloadJSON(links, `export-${today}.json`);
+            await setMeta("lastExportDate", today);
+          }
+        } finally {
+          exporting = false;
+        }
+      }
+
+      (async () => {
+        const saved = await loadLinks();
+        if (saved) {
+          links = saved;
+          loaded = true;
+        }
+        render();
+        maybeExport();
+      })();
+      setInterval(maybeExport, 60_000);
+    </script>
+  </body>
+</html>
